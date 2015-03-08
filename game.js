@@ -664,11 +664,8 @@ function clickGamePage( index )
             switchPlayer();
             setgOldHighlightIndex( getHighlightIndex() );
             setHighlightIndex( index );
-
-            //drawSingle( getHighlightIndex() );
             
-            //aiTurn( ai, getNowPlayer() );
-            aiTurnWait( ai, getNowPlayer(), index );
+            aiTurnWait( ai, getNowPlayer(), index ); // 已經包含重新畫index的動作
         }
     }
 
@@ -681,15 +678,15 @@ function clickGamePage( index )
 
         drawSingle( getgOldHighlightIndex() );
         setgOldHighlightIndex( index );
+        
+        drawSingle( index );
     }
     // 點擊的是一個可以翻開的棋子，於是翻開
     else if ( openChess( chessData, index ) )
     {
     	playClickSound();
-        //drawSingle( index );
         switchPlayer();
-        //aiTurn( ai, getNowPlayer() );
-        aiTurnWait( ai, getNowPlayer(), index );
+        aiTurnWait( ai, getNowPlayer(), index ); // 已經包含重新畫index的動作
     }
     // 點擊的是沒有棋子的地方，若在除錯模式要印出目前棋子配製狀況
     else if ( !ON_DEVICE )
@@ -697,7 +694,6 @@ function clickGamePage( index )
         printDemoChessData();
     }
 
-    drawSingle( index );
     //drawAllEatenChess();
     
     checkGameOver();
