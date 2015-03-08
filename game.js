@@ -652,7 +652,8 @@ function clickGamePage( index )
 
     var indexSelected = index;
     var camp = getNowPlayer();
-
+    var bWait = false;
+    
     // 有選定棋子的時候，可以做吃棋或移棋的動作
     if ( existHighlight() )
     {
@@ -666,6 +667,8 @@ function clickGamePage( index )
             setHighlightIndex( index );
             
             aiTurnWait( ai, getNowPlayer(), index ); // 已經包含重新畫index的動作
+            
+            bWait = true;
         }
     }
 
@@ -679,7 +682,10 @@ function clickGamePage( index )
         drawSingle( getgOldHighlightIndex() );
         setgOldHighlightIndex( index );
         
-        drawSingle( index );
+        if ( !bWait )
+        {
+            drawSingle( index );
+        }
     }
     // 點擊的是一個可以翻開的棋子，於是翻開
     else if ( openChess( chessData, index ) )

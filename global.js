@@ -484,8 +484,8 @@ var gPlayerCamp; // 此局玩家陣營
 //
 // 模擬相關
 //
-var SIM_LENGTH = new Array( 100, 300, 500, 700, 900, 1100, 1300, 1500 ); // 八個等級
-var PRICES_LENGTH = new Array( 4, 5, 6, 7, 8, 9, 10, 11 ); // 八個等級
+var SIM_LENGTH = new Array( 100, 300, 500, 700, 900, 1300, 1700, 2000 ); // 八個等級
+var PRICES_LENGTH = new Array( 4, 5, 6, 7, 8, 10, 11, 12 ); // 八個等級
 var giSimLength = SIM_LENGTH[0];  // 模擬紀錄上限
 var giPricesLength = PRICES_LENGTH[0]; // 單次吃棋或被吃的權值數上限 (也是模擬回合的上限)
 
