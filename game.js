@@ -19,6 +19,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 "use strict";
 
+document.addEventListener("DOMContentLoaded", startGame, false);
+
+
 // get the file path of phonegap .
 function getPhoneGapPath() 
 {
@@ -117,7 +120,7 @@ function click( posX, posY )
         if ( index == DIALOG_HUMAN_FIRST )
         {
             gameOrder = DIALOG_HUMAN_FIRST;
-            printError( "Human first" );
+            printDebug( "Human first" );
         }
         else if ( index == DIALOG_AI_FIRST )
         {
@@ -127,7 +130,7 @@ function click( posX, posY )
             
             aiTurn( ai, BLACK );    // BLACK是隨便傳的，反正都是翻棋，不影響。
             
-            printError( "AI first" );
+            printDebug( "AI first" );
         }
     }
     else if ( getNowPage() == GAME_OVER_PAGE )
@@ -312,7 +315,7 @@ document.onmousedown = function( event )
     }
     catch ( err )
     {
-        errorMessage.innerHTML += "發生錯誤: " + err.stack + "<br>";
+        printDebug( "發生錯誤: " + err.stack );
     }
 }
 
@@ -334,7 +337,7 @@ document.ontouchstart = function( event )
     }
     catch ( err )
     {
-        errorMessage.innerHTML += "發生錯誤: " + err.stack + "<br>";
+        printDebug( "發生錯誤: " + err.stack );
     }
 }
 
@@ -362,7 +365,7 @@ function playClickSound()
 // 執行AI回合
 function aiTurn( ai, camp )
 {
-    printError( "<br>" + getCampName( camp ) );
+    printDebug( getCampName( camp ) );
     clearDebug(); // clear debug message .
 
     var chessData = getNowChessData(); // 當前棋盤與棋子資料
@@ -397,7 +400,7 @@ function aiTurn( ai, camp )
             
             if ( sourceIndex < 0 )
             {
-                //printError( "無法行走! " );
+                //printDebug( "無法行走! " );
             }
             else if ( openChess( chessData, destIndex ) ||
                       eat( chessData, destIndex, sourceIndex, camp ) ||
@@ -418,7 +421,7 @@ function aiTurn( ai, camp )
             if ( gFirstTurn )
             {
                 setNowCamp( chessData.chesses[destIndex] );
-                printError( "<br>先手是" + getCampName( getNowPlayer() ) );
+                printDebug( "<br>先手是" + getCampName( getNowPlayer() ) );
 
                 gPlayerCamp = getAnotherCamp( getNowPlayer() ); // 玩家陣營
 
@@ -814,6 +817,8 @@ function getScrollLength()
 // 初始化動作，啓動程式時呼叫
 function init()
 {
+    log( "init" );
+
 	if ( ON_DEVICE )
 	{
 		document.addEventListener( "deviceready", onDeviceReady, false );
@@ -843,7 +848,9 @@ var gLocaleName; // 取得的區域名稱
 
 function onDeviceReady()
 {
-    initAllItem();
+    log( "onDeviceReady" );
+
+    //initAllItem();
     
     if ( gDeviceName == WINDOWS_PHONE )
     {
@@ -927,7 +934,7 @@ function showPage( page )
         var w;
         var h;
 
-        if ( ON_DEVICE )
+        if ( true )//ON_DEVICE )
         {
             var deviceHeight = document.body.offsetHeight;
             var deviceWidth = document.body.offsetWidth;
@@ -1087,7 +1094,7 @@ function showPage( page )
     }
     catch ( err )
     {
-        printError( "發生錯誤: " + err.stack + "<br>" );
+        printDebug( "發生錯誤: " + err.stack );
     }
 
 }
@@ -1103,6 +1110,8 @@ function startGame()
     {
         init(); // 動作初始化
         initAllItem();
+        
+        setDocumentTitle( GAME_NAME[gLanguageIndex] );
 
 		if ( !ON_DEVICE || 
              gDeviceName == SIM_DEVICE ||
@@ -1120,7 +1129,7 @@ function startGame()
     }
     catch ( err )
     {
-        errorMessage.innerHTML += "發生錯誤: " + err.stack + "<br>";
+        printDebug( "發生錯誤: " + err.stack );
 
 		showPage( START_PAGE ); // 有錯的時候還是盡量看能不能顯示主頁
     }

@@ -608,7 +608,7 @@ function drawAbout( index )
 
     ctx.rect( phyX, phyY, chessWidth + chessSizeOffset * 3, chessHeight + chessSizeOffset * 3 );
 
-    //printError( c.width + " " + c.height + " " + chessWidth + " " + chessHeight + "<br>" );
+    //printDebug( c.width + " " + c.height + " " + chessWidth + " " + chessHeight + "<br>" );
 
     ctx.closePath();
 
@@ -662,7 +662,7 @@ function drawLog( index )
 
     ctx.rect( phyX, phyY, chessWidth + chessSizeOffset * 3, chessHeight + chessSizeOffset * 3 );
 
-    //printError( c.width + " " + c.height + " " + chessWidth + " " + chessHeight + "<br>" );
+    //printDebug( c.width + " " + c.height + " " + chessWidth + " " + chessHeight + "<br>" );
 
     ctx.closePath();
 
@@ -1612,7 +1612,7 @@ function redrawAnimation( count )
         }
         catch ( err )
         {
-            printError( "發生錯誤: " + err.stack + "<br>" );
+            printDebug( "發生錯誤: " + err.stack );
         }
     }
 }

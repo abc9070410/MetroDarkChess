@@ -19,6 +19,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 "use strict";
 
+
+function log( text )
+{
+    if ( console != null )
+        console.log( text );
+}
+
+function setDocumentTitle( sTitle )
+{
+    document.title = sTitle;
+}
+
 // 棋盤當前資料
 function ChessData( chesses, chessStates, gEatenBlockQueue, gEatenRedQueue, gEatenPriorityQueue )
 {
@@ -165,14 +177,16 @@ function printGame( message )
 
     if ( !ON_DEVICE || DEBUG_MODE )
     {
-        gameMessage.innerHTML = message + "&nbsp;&nbsp;&nbsp;玩家: " + playerString;
+        //gameMessage.innerHTML = message + "&nbsp;&nbsp;&nbsp;玩家: " + playerString;
+        
+        //log( "玩家: " + playerString );
     }
 }
 
 // clear debug message .
 function clearDebug()
 {
-    debugMessage.innerHTML = "";
+    //debugMessage.innerHTML = "";
 }
 
 // 印出除錯訊息
@@ -180,20 +194,10 @@ function printDebug( message )
 {
     if ( DEBUG_MODE )
     {
-        debugMessage.innerHTML += message;
+        //debugMessage.innerHTML += message;
+        log( message );
     }
 }
-
-// 印出錯誤訊息
-function printError( message )
-{
-    if ( DEBUG_MODE )
-    {
-        errorMessage.innerHTML += message;
-    }
-}
-
-
 
 function swap ( a, b )
 {
@@ -442,7 +446,7 @@ function setSize( w, h, page )
         gInitHeight = height;
     }
 
-    //printError( " ->" + page + " w: " + width + "  h: " + height + "] " );
+    //printDebug( " ->" + page + " w: " + width + "  h: " + height + "] " );
 
     var distanceOffset = 0; // 棋子間的間隔
 
@@ -777,7 +781,7 @@ function getLighterColor( color )
     var g = color.substring( 3, 5 );
     var b = color.substring( 5, 7 );
 
-    //printError( r + "_" + g + "_" + b );
+    //printDebug( r + "_" + g + "_" + b );
 
     var offset = 48;
 
@@ -808,7 +812,7 @@ function getDarkerColor( color )
     var g = color.substring( 3, 5 );
     var b = color.substring( 5, 7 );
 
-    //printError( r + "_" + g + "_" + b );
+    //printDebug( r + "_" + g + "_" + b );
 
     var offset = -48;
 
@@ -838,6 +842,9 @@ function initAllItem()
     {
         window.localStorage.clear();
     }
+    
+    var c = document.getElementById( 'c' );  //canvas itself
+    ctx = c.getContext( '2d' );  // 繪圖
     
     gInitGameState = true; // 是不是剛開始遊戲
     
@@ -1300,7 +1307,7 @@ function printPrices( priceQueue )
     {
         if ( priceQueue[i] != INIT_PRICE )
         {
-            printError( "" + priceQueue[i] + "," );
+            printDebug( "" + priceQueue[i] + "," );
         }
     }
 }
@@ -1529,7 +1536,7 @@ function sameTraced( traced )
 // 檢查是否跟之前的追殺相同
 function sameTrace( tracer, traced )
 {
-    printError( "<br>" + tracer + gNowTracer + traced + gNowTraced );
+    printDebug( "" + tracer + gNowTracer + traced + gNowTraced );
     return ( tracer == gNowTracer && traced == gNowTraced );
 }
 

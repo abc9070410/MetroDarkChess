@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // 系統相關
 //
 var ON_DEVICE = 0; // 是否在平台上測試
-var DEBUG_MODE = 0; // 是否為除錯模式
+var DEBUG_MODE = 1; // 是否為除錯模式
 var RESET = 0; // 重新使用預設設定
 
 //
@@ -170,15 +170,11 @@ var OPEN = 0; // 顯示棋子正面
 var CLOSE = 1; // 顯示棋子背面
 var EATEN = -1; // 被吃 顯示空位
 
-
-
-var c = document.getElementById( 'c' );  //canvas itself
-
 var gameMessage = document.getElementById( 'gameMessage' );  // 遊戲訊息輸出
 var debugMessage = document.getElementById( 'debugMessage' );  // 除錯訊息輸出
 var errorMessage = document.getElementById( 'errorMessage' );  // 錯誤訊息輸出
 
-var ctx = c.getContext( '2d' );  // 繪圖
+var ctx; // 繪圖
 
 var gNowPlayer = BLACK; // 目前玩家 (0:黑方 1:紅方)
 

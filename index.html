@@ -2,8 +2,6 @@
   <head>
     <title>Metro Dark Chess</title>
 
-
-
     <style>
       html, body {
       width: 100%;
@@ -21,32 +19,25 @@
       padding:0px;
       }
     </style>
+    
+        <script src="language.js"></script>
+        <script src="global.js"></script>
+        <script src="common.js"></script>
+        <script src="rule.js"></script>
+        <script src="display.js"></script>
+        <script src="ai.js"></script>
+        <script src="game.js"></script>
+    
   </head>
-  <body>
+    <body>
     <canvas id='c'></canvas>
     <div id="sound_element"></div>
-    
-      <b id='gameMessage'></b>
-        <b id='debugMessage'></b>
-          <b id='errorMessage'></b>
-          
-          <audio id="clickAudio" src="click.wav" preload="auto"></audio>
-          
-            <script src="language.js"></script>
-            <script src="global.js"></script>
-            <script src="common.js"></script>
 
-            <script src="rule.js"></script>
-            <script src="display.js"></script>
+    <b id='gameMessage'></b>
+    <b id='debugMessage'></b>
+    <b id='errorMessage'></b>
 
-            <script src="ai.js"></script>
-            <script src="game.js"></script>
-            
-            <script>
-            	ON_DEVICE = 1;
-            	gDeviceName = CHROME;
-            	
-                startGame();
-            </script>
-          </body>
+    <audio id="clickAudio" src="click.wav" preload="auto"></audio>
+
+    </body>
 </html>

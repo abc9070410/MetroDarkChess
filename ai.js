@@ -46,7 +46,7 @@ gChessStates = new Array( 0, -1, -1, -1, 1, -1, -1, -1, 0, 0, -1, 0, 0, 1, -1, -
 function moveByAdvanceAI( chesses, chessStates, camp )
 {
 
-    //printError( "<hr>" );
+    //printDebug( "<hr>" );
     var chessData = copyChessData( getNowChessData() );
 
     var eatPrices = getInitPrices();
@@ -63,7 +63,7 @@ function moveByAdvanceAI( chesses, chessStates, camp )
 
     printDebug( getCampName( camp ) );
     printDebug( "MedAI:" + bestMoves[0] + "->" + bestMoves[1] );
-    //printError( "<hr>" );
+    //printDebug( "<hr>" );
 
     if ( bestMoves[0] != NOT_FOUND && bestMoves[1] != NOT_FOUND )
     {
@@ -143,7 +143,7 @@ function walkOrEatByBestWay( chessData, camp, eatenPrices, n )
 
         if ( getCamp( chessData.chesses[sourceIndex] ) != camp )
         {
-            printError( "錯誤: 誤判陣營" );
+            printDebug( "錯誤: 誤判陣營" );
             return false;
         }
 
@@ -185,9 +185,8 @@ function getBestSimMoves( chessData )
 
     for ( var i = 0; i < gSimCount; i ++ )
     {
-        printDebug( "<br>第" + i + "種走法：<br>去吃：" + gSimEatPrices[i] );
-        printDebug( "<br>被吃：" + gSimEatenPrices[i] );
-        printDebug( "<br>" );
+        printDebug( "第" + i + "種走法：<br>去吃：" + gSimEatPrices[i] );
+        printDebug( "被吃：" + gSimEatenPrices[i] );
 
         // 若被吃得比吃得好 , 就不考慮了
         if ( comparePrices( gSimEatPrices[i], gSimEatenPrices[i] ) != B_IS_BETTER )
@@ -229,9 +228,9 @@ function getBestSimMoves( chessData )
         }
     }
 
-    printDebug( "最佳:" + bestIndex + "<br>" + gSimEatPrices[bestIndex] );
-    printDebug( "<br>" + gSimEatenPrices[bestIndex] );
-    printDebug( "<br>" );
+    printDebug( "最佳:" + bestIndex + "\n" + gSimEatPrices[bestIndex] );
+    printDebug( "" + gSimEatenPrices[bestIndex] );
+    printDebug( "" );
 
 
     return bestMoves;
@@ -365,7 +364,7 @@ function simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, init
     {
         saveSim( eatPrices, eatenPrices, firstMoves );
 
-        printError( "][OVER]" );
+        printDebug( "][OVER]" );
 
     }
 
@@ -466,7 +465,7 @@ function findInvasiveWalk( chessData, moveData )
              getCamp( chessData.chesses[i] )  == enemyCamp &&
              AeatB( chess, chessData.chesses[i] ) )
         {
-            //printError( "目標是" + chessData.chesses[i] + ": " );
+            //printDebug( "目標是" + chessData.chesses[i] + ": " );
             var tempPrice = getPrice( chessData.chesses[i] );
             var tempDistance = getIndexDistance( index, i );
             var tempDirection = getIndexDirection( index, i );
@@ -480,11 +479,11 @@ function findInvasiveWalk( chessData, moveData )
                        canEat( chessData, tempIndex, index, camp ) ) &&
                      !existSimEatenChance( chessData, tempIndex, chess ) ) // 移動到該處沒有立即危險
                 {
-                    //printError( "目標是" + chessData.chesses[i] + ": " );
-                    //printError( "　距離是" + tempDistance );
+                    //printDebug( "目標是" + chessData.chesses[i] + ": " );
+                    //printDebug( "　距離是" + tempDistance );
                     bestDistance = tempDistance;
                     bestDirection = tempDirection;
-                    //printError( "　方向是" + bestDirection );
+                    //printDebug( "　方向是" + bestDirection );
 
                     bestIndex = tempIndex;
                     bestPrice = tempPrice;
@@ -497,10 +496,10 @@ function findInvasiveWalk( chessData, moveData )
 
     if ( existReachIndex )
     {
-        printError( " ~~~~~找到啦:" );
+        printDebug( " ~~~~~找到啦:" );
 
-        printError( "位置:" + bestIndex );
-        printError( "方向:" + bestDirection );
+        printDebug( "位置:" + bestIndex );
+        printDebug( "方向:" + bestDirection );
         moveData.destIndex = bestIndex;
         moveData.priority = priority;
         moveData.price = bestPrice;
@@ -520,7 +519,7 @@ function printReachArea()
 {
     for ( var i = 0; i < gReachArea.length; i ++ )
     {
-        printError( gReachArea[i] + "." );
+        printDebug( gReachArea[i] + "." );
     }
 
 }
@@ -849,7 +848,7 @@ function findNormalEscape( chessData, moveData )
         // 若可能被鄰居吃的時候
         if ( canEat( chessData, index, i, enemyCamp ) )
         {
-            //printError( " 可能被吃: " );
+            //printDebug( " 可能被吃: " );
 
             targetIndex = i;
 
@@ -864,13 +863,13 @@ function findNormalEscape( chessData, moveData )
             // 若己方有棋子可以直接吃那顆具威脅的敵方棋子，那就不用逃脫了。
             if ( existSimEatenChance( chessData, i, chessData.chesses[i] ) )
             {
-                printError( " DEAT " );
+                printDebug( " DEAT " );
             }
             // 對方若吃，便會被我方吃 。
             else if ( enemyPrice >= price &&
                       existSimEatenChance( chessData, index, chessData.chesses[i] ) )
             {
-                printError( " BOT " );
+                printDebug( " BOT " );
                 // tell other function there exist a chess with price in balance of terror .
             }
             // 先找有無逃脫可能
@@ -1123,7 +1122,7 @@ function findWalkToEat( chessData, moveData )
              getTraceTimes() > MAX_TRACE_TIMES && // 不能追超過
              getLiveChessCount( chessData, camp ) > 1 ) // 只剩一個棋子，當然不戰不休
         {
-            printError( "追殺超過" + MAX_TRACE_TIMES + "次了" );
+            printDebug( "追殺超過" + MAX_TRACE_TIMES + "次了" );
 
             setNoTraceIndex( bestIndex ); // 標記此位置，讓其它方法也走不到此處
             return false;
@@ -1715,7 +1714,7 @@ function setAllOpenMoveData( chessData, camp )
     }
     catch ( err )
     {
-        errorMessage.innerHTML += "發生錯誤: " + err.stack + "<br>";
+        printDebug( "發生錯誤: " + err.stack );
     }
 
     return allOpenMoveData;
@@ -1750,7 +1749,7 @@ function setAllMoveData( chessData, camp )
     }
     catch ( err )
     {
-        errorMessage.innerHTML += "發生錯誤: " + err.stack + "<br>";
+        printDebug( "發生錯誤: " + err.stack );
     }
 
     return allMoveData;
@@ -1899,11 +1898,11 @@ function getBestMoveDataIndex( allMoveData )
 
     }
 
-    printError( " 最終: " + getPriorityName( bestPriority ) );
+    printDebug( " 最終: " + getPriorityName( bestPriority ) );
 
     if ( bestPriority == WALK_TO_EAT )
     {
-        printError( "<br>" + gNowTempTracer + " trace " + gNowTempTraced + "<br>" );
+        printDebug( gNowTempTracer + " trace " + gNowTempTraced );
         setTrace( gNowTempTracer, gNowTempTraced ); // 設置追殺行為
     }
 
@@ -1928,7 +1927,7 @@ function moveByAI( chesses, chessStates, camp )
 
     if ( bestIndex == NOT_FOUND )
     {
-        printError( "找不到 !! " );
+        printDebug( "找不到 !! " );
         alert( "找不到 !! " );
 
         moves[0] = NOT_FOUND;
@@ -1936,8 +1935,8 @@ function moveByAI( chesses, chessStates, camp )
         return moves;
     }
 
-    printError( getCampName( camp ) );
-    printError( chesses[allMoveData[bestIndex].sourceIndex] +  allMoveData[bestIndex].sourceIndex + " -> " +
+    printDebug( getCampName( camp ) );
+    printDebug( chesses[allMoveData[bestIndex].sourceIndex] +  allMoveData[bestIndex].sourceIndex + " -> " +
                 chesses[allMoveData[bestIndex].destIndex] + allMoveData[bestIndex].destIndex + "   " );
 
 

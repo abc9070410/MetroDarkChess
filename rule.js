@@ -151,7 +151,7 @@ function switchPlayer()
     }
 
 
-    //printError( " 目前陣營: " + getCampName( gNowPlayer ) + " <br>" );
+    //printDebug( " 目前陣營: " + getCampName( gNowPlayer ) + " <br>" );
 }
 
 // 將aX, aY的棋子與bX,bY的棋子交換位置
@@ -289,7 +289,7 @@ function canEat( chessData, destIndex, sourceIndex, camp )
                  ( getRank( chessData.chesses[sourceIndex] ) >= getRank( chessData.chesses[destIndex] ) ||
                    ( getRank( chessData.chesses[destIndex] ) - getRank( chessData.chesses[sourceIndex] ) ) == 6 )  )
             {
-                //printError( "己方: " + getCampName( getCamp( chessData.chesses[sourceIndex] ) ) + " " + chessData.chesses[sourceIndex] + "<br>" + "敵方: " + getCampName( getCamp( chessData.chesses[destIndex] ) ) + " " + chessData.chesses[destIndex] + "<br>" );
+                //printDebug( "己方: " + getCampName( getCamp( chessData.chesses[sourceIndex] ) ) + " " + chessData.chesses[sourceIndex] + "<br>" + "敵方: " + getCampName( getCamp( chessData.chesses[destIndex] ) ) + " " + chessData.chesses[destIndex] + "<br>" );
                 return true;
             }
         }
