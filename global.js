@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // 系統相關
 //
 var ON_DEVICE = 0; // 是否在平台上測試
-var DEBUG_MODE = 1; // 是否為除錯模式
+var DEBUG_MODE = 0; // 是否為除錯模式
 var RESET = 0; // 重新使用預設設定
 
 //
@@ -224,7 +224,8 @@ var PORTRAIT = 2; // 直立
 // 頁面相關
 //
 var LOW_GAME_PAGE = 0;
-var MED_GAME_PAGE = 1;
+//var MED_GAME_PAGE = 1;
+var GAME_LEVEL_PAGE = 1;
 //var HIGH_GAME_PAGE = 2;
 var TWO_AI_PAGE = 2;
 var TWO_PLAYER_PAGE = 3;
@@ -241,7 +242,7 @@ var COLOR_PAGE = 113;
 var GAME_OVER_PAGE = 114;
 var GAME_OVER_DIALOG_PAGE = 115;
 var GAME_START_DIALOG_PAGE = 116;
-var GAME_LEVEL_PAGE = 117;
+var MED_GAME_PAGE = 117;
 
 
 var nowGamePage = 0; // 目前遊戲頁面 (用於跳轉之紀錄)
@@ -483,9 +484,10 @@ var gPlayerCamp; // 此局玩家陣營
 //
 // 模擬相關
 //
-
-var SIM_LENGTH = 100;  // 模擬紀錄上限
-var PRICES_LENGTH = 10; // 單次吃棋或被吃的權值數上限 (也是模擬回合的上限)
+var SIM_LENGTH = new Array( 100, 300, 500, 700, 900, 1100, 1300, 1500 ); // 八個等級
+var PRICES_LENGTH = new Array( 4, 5, 6, 7, 8, 9, 10, 11 ); // 八個等級
+var giSimLength = 500;  // 模擬紀錄上限
+var giPricesLength = 10; // 單次吃棋或被吃的權值數上限 (也是模擬回合的上限)
 
 var A_IS_BETTER = 0; // A(第一個)較優
 var B_IS_BETTER = 1; // B(第二個)較優
@@ -494,9 +496,9 @@ var A_B_ARE_SAME = 2; // 第一個跟第二個同等
 var LOW_AI = 0; // 低階AI
 var MED_AI = 1; // 進階AI
 
-var gSimEatPrices = new Array( SIM_LENGTH ); // 所有模擬吃棋的權值
-var gSimEatenPrices = new Array( SIM_LENGTH ); // 所有模擬被吃棋的權值
-var gSimMoves = new Array( SIM_LENGTH ); // 所有模擬的第一步
+var gSimEatPrices = new Array( giSimLength ); // 所有模擬吃棋的權值
+var gSimEatenPrices = new Array( giSimLength ); // 所有模擬被吃棋的權值
+var gSimMoves = new Array( giSimLength ); // 所有模擬的第一步
 var gSimCount = 0; // 當前模擬記錄數量
 
 
@@ -537,4 +539,7 @@ var gBackupMargin; // 之前位移位置
 var gTouchStartX = -1;
 var gTouchStartY = -1;
 
-
+var asNumberSingal = new Array( "⓪", "❶", "❷", "❸", "❹", "❺", "❻", "❼", "❽", "❾", "❿" );
+//var asNumberSingal = new Array( "⓪", "①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩", "⑪", "⑫", "⑬", "⑭", "⑮", "⑯", "⑰", "⑱", "⑲", "⑳" );
+var gbWaitingAI = false; // 等待AI做完之前，不能有下棋動作
+var giWaitingSlip = 200;

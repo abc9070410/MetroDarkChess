@@ -41,6 +41,8 @@ var STR_LEVEL_SIX = new Array( "", "", "", "", "" );
 var STR_LEVEL_SEVEN = new Array( "", "", "", "", "" );
 var STR_LEVEL_EIGHT = new Array( "", "", "", "", "" );
 
+var STR_LEVEL = new Array( "等級", "", "Level", "", "" );
+
 var STR_LEVEL_LOGO_ONE = new Array( "等級1", "", "Level 1", "", "" );
 var STR_LEVEL_LOGO_TWO = new Array( "等級2", "", "Levle 2", "", "" );
 var STR_LEVEL_LOGO_THREE = new Array( "等級3", "", "Levle 3", "", "" );

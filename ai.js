@@ -53,13 +53,13 @@ function moveByAdvanceAI( chesses, chessStates, camp )
     var eatenPrices = getInitPrices();
     var firstMoves = new Array( NOT_FOUND, NOT_FOUND );
 
-    var n = PRICES_LENGTH - 1; // 模擬幾回合的攻防
+    var n = giPricesLength - 1; // 模擬幾回合的攻防
 
     initSim(); // 清除前次的模擬紀錄
 
     simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, n, 1 );
 
-    var bestMoves = getBestSimMoves( chessData ); // find the best move from last sim .
+    var bestMoves = getBestSimMoves( chessData, camp ); // find the best move from last sim .
 
     printDebug( getCampName( camp ) );
     printDebug( "MedAI:" + bestMoves[0] + "->" + bestMoves[1] );
@@ -143,7 +143,7 @@ function walkOrEatByBestWay( chessData, camp, eatenPrices, n )
 
         if ( getCamp( chessData.chesses[sourceIndex] ) != camp )
         {
-            printDebug( "錯誤: 誤判陣營" );
+            printError( "錯誤: 誤判陣營" );
             return false;
         }
 
@@ -173,7 +173,7 @@ function walkOrEatByBestWay( chessData, camp, eatenPrices, n )
 }
 
 // 找出此次最佳的走法的第一步
-function getBestSimMoves( chessData )
+function getBestSimMoves( chessData, camp )
 {
     var bestPirces = getInitPrices();
     var bestMoves = getInitMoves();
@@ -184,9 +184,8 @@ function getBestSimMoves( chessData )
 
     for ( var i = 0; i < gSimCount; i ++ )
     {
-        var iPlayer = getNextPlayer();
-        var sEatText = getChessesByPrices( gSimEatPrices[i], iPlayer );
-        var sEatenText = getChessesByPrices( gSimEatenPrices[i], iPlayer );
+        var sEatText = getChessesByPrices( gSimEatPrices[i], camp );
+        var sEatenText = getChessesByPrices( gSimEatenPrices[i], camp );
     
         if ( sEatText != null || sEatenText != null )
         {
@@ -244,6 +243,8 @@ function getBestSimMoves( chessData )
 
     if ( bestIndex != NOT_FOUND )
     {
+        log( "全部 " + gSimCount + " 走法 , " + "選擇第" + bestIndex + "種走法" );
+    
         printDebug( "最佳:" + bestIndex + "\n" + gSimEatPrices[bestIndex] );
         printDebug( "" + gSimEatenPrices[bestIndex] );
     }
@@ -259,7 +260,7 @@ function getBestSimMoves( chessData )
 // 存入模擬結果
 function saveSim( eatPrices, eatenPrices, moves )
 {
-    if ( gSimCount < SIM_LENGTH )
+    if ( gSimCount < giSimLength )
     {
         printDebug( "[紀錄第" + gSimCount + "種走法]:" + moves );
 
@@ -275,7 +276,7 @@ function initSim()
 {
     gSimCount = 0;
 
-    for ( var i = 0; i < SIM_LENGTH; i ++ )
+    for ( var i = 0; i < giSimLength; i ++ )
     {
         gSimEatPrices[i] = getInitPrices();
         gSimEatenPrices[i] = getInitPrices();
@@ -288,11 +289,11 @@ function initSim()
 function simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, initN, iRecursionCount )
 {
     var nowRound = initN - n; // 目前進行的回合
-    printDebug( iRecursionCount + " [第" + nowRound + "回合: 剩" + ( SIM_LENGTH - gSimCount ) + "個位置可放模擬紀錄] " );
+    printDebug( iRecursionCount + " [第" + nowRound + "回合: 剩" + ( giSimLength - gSimCount ) + "個位置可放模擬紀錄] " );
 
     if ( n > 0 )
     {
-        for ( var i = 0; i < INDEX_LENGTH && gSimCount < SIM_LENGTH; i ++ )
+        for ( var i = 0; i < INDEX_LENGTH && gSimCount < giSimLength; i ++ )
         {
             var sourceIndex = i;
 
@@ -363,7 +364,7 @@ function simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, init
                     
                     walkOrEatByBestWay( innerChessData, getAnotherCamp( camp ), innerEatenPrices, nowRound );
                     
-                    if ( n > 0 && gSimCount < SIM_LENGTH )
+                    if ( n > 0 && gSimCount < giSimLength )
                     {
                         simAllWay( innerChessData, camp, innerEatPrices, innerEatenPrices, firstMoves, n - 1, initN, iRecursionCount + 1 );
                     }
@@ -1726,7 +1727,7 @@ function setAllOpenMoveData( chessData, camp )
     }
     catch ( err )
     {
-        printDebug( "發生錯誤: " + err.stack );
+        printError( "發生錯誤: " + err.stack );
     }
 
     return allOpenMoveData;
@@ -1761,7 +1762,7 @@ function setAllMoveData( chessData, camp )
     }
     catch ( err )
     {
-        printDebug( "發生錯誤: " + err.stack );
+        printError( "發生錯誤: " + err.stack );
     }
 
     return allMoveData;

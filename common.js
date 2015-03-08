@@ -189,6 +189,11 @@ function clearDebug()
     //debugMessage.innerHTML = "";
 }
 
+function printError( message )
+{
+    log( message );
+}
+
 // 印出除錯訊息
 function printDebug( message )
 {
@@ -307,7 +312,7 @@ function isStartPageNow()
 // 檢測目前page是否屬於game page
 function isGamePage( page )
 {
-    if ( page <= TWO_PLAYER_PAGE )
+    if ( page == LOW_GAME_PAGE || page == MED_GAME_PAGE )
     {
         return true;
     }
@@ -1324,7 +1329,7 @@ function getInitMoves()
 // 取得初始化權值
 function getInitPrices()
 {
-    var prices = new Array( PRICES_LENGTH );
+    var prices = new Array( giPricesLength );
 
     for ( var i = 0; i < prices.length; i ++ )
     {
@@ -1337,7 +1342,7 @@ function getInitPrices()
 // 取得最大權值
 function getBiggestPrices()
 {
-    var prices = new Array( PRICES_LENGTH );
+    var prices = new Array( giPricesLength );
 
     for ( var i = 0; i < prices.length; i ++ )
     {
@@ -1363,7 +1368,7 @@ function copyMoves( moves )
 // 複製prices
 function copyPrices( prices )
 {
-    var tempPrices = new Array( PRICES_LENGTH );
+    var tempPrices = new Array( giPricesLength );
 
     for ( var i = 0; i < tempPrices.length; i ++ )
     {
@@ -1621,9 +1626,7 @@ function setGameLog( page )
         {
             gMedGameLossCount++;
         }
-
     }
-
 }
 
 
@@ -1668,4 +1671,12 @@ function getChessesByPrices( aiPrices, iPlayer )
     }
     
     return sText == "" ? null : sText;
+}
+
+function setGameLevel( index )
+{
+    giSimLength = SIM_LENGTH[index];
+    giPricesLength = PRICES_LENGTH[index];
+    
+    log( "模擬次數:" + giSimLength + "," + "模擬深度:" + giPricesLength );
 }

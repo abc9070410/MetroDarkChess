@@ -52,11 +52,6 @@ function click( posX, posY )
             
             setItem( "gLowGameCount", gLowGameCount );
         }
-        else if ( index == MED_GAME_PAGE )
-        {
-            gMedGameCount++;
-            setItem( "gMedGameCount", gMedGameCount );
-        }
         
         if ( index == TWO_PLAYER_PAGE )
         {
@@ -69,9 +64,9 @@ function click( posX, posY )
             showPage( index );
             startDemo(); // 開始AI對戰展示
         }
-        else if ( isGamePage( index ) )
+        else if ( index == LOW_GAME_PAGE )
         {
-            nowGamePage = index; // 紀錄點擊的遊戲模式
+            nowGamePage = LOW_GAME_PAGE; // 紀錄點擊的遊戲模式
             showPage( GAME_START_DIALOG_PAGE );
         }
         else
@@ -80,6 +75,16 @@ function click( posX, posY )
             showPage( index );
         }
         
+    }
+    else if ( getNowPage() == GAME_LEVEL_PAGE )
+    {
+        gMedGameCount++;
+        setItem( "gMedGameCount", gMedGameCount );
+        
+        setGameLevel( index );
+            
+        nowGamePage = MED_GAME_PAGE; // 紀錄點擊的遊戲模式
+        showPage( GAME_START_DIALOG_PAGE );
     }
     else if ( getNowPage() == OPTION_PAGE )
     {
@@ -247,8 +252,16 @@ function jumpMove( page, index )
 // 滑鼠左鍵按下的事件
 function mousedown( pageX, pageY )
 {
-    if ( c.offsetLeft < pageX && c.offsetLeft + width + chessEatenSize > pageX &&
-    c.offsetTop < pageY && c.offsetTop + height + chessEatenSize > pageY    )
+    if ( gbWaitingAI )
+    {
+        printDebug( "waiting AI ..." );
+        return;
+    }
+
+    if ( c.offsetLeft < pageX && 
+         c.offsetLeft + width + chessEatenSize > pageX &&
+         c.offsetTop < pageY && 
+         c.offsetTop + height + chessEatenSize > pageY )
     {
         var posX = 0;
         var posY = 0;
@@ -315,7 +328,7 @@ document.onmousedown = function( event )
     }
     catch ( err )
     {
-        printDebug( "發生錯誤: " + err.stack );
+        printError( "發生錯誤: " + err.stack );
     }
 }
 
@@ -337,7 +350,7 @@ document.ontouchstart = function( event )
     }
     catch ( err )
     {
-        printDebug( "發生錯誤: " + err.stack );
+        printError( "發生錯誤: " + err.stack );
     }
 }
 
@@ -621,7 +634,6 @@ function clickGamePage( index )
     // 遊戲剛開始，決定黑方紅方
     if ( gFirstTurn )
     {
-
         // 玩家優先
         if ( gameOrder == DIALOG_HUMAN_FIRST )
         {
@@ -650,14 +662,13 @@ function clickGamePage( index )
 			playClickSound();
 			
             switchPlayer();
-            //setTimeout( aiAnimation( getNowPlayer() ), 1000 );
-
             setgOldHighlightIndex( getHighlightIndex() );
             setHighlightIndex( index );
 
-            drawSingle( getHighlightIndex() );
-
-            aiTurn( ai, getNowPlayer() );
+            //drawSingle( getHighlightIndex() );
+            
+            //aiTurn( ai, getNowPlayer() );
+            aiTurnWait( ai, getNowPlayer(), index );
         }
     }
 
@@ -670,16 +681,15 @@ function clickGamePage( index )
 
         drawSingle( getgOldHighlightIndex() );
         setgOldHighlightIndex( index );
-
     }
     // 點擊的是一個可以翻開的棋子，於是翻開
     else if ( openChess( chessData, index ) )
     {
     	playClickSound();
-        drawSingle( index );
-    	
+        //drawSingle( index );
         switchPlayer();
-        aiTurn( ai, getNowPlayer() );
+        //aiTurn( ai, getNowPlayer() );
+        aiTurnWait( ai, getNowPlayer(), index );
     }
     // 點擊的是沒有棋子的地方，若在除錯模式要印出目前棋子配製狀況
     else if ( !ON_DEVICE )
@@ -688,7 +698,7 @@ function clickGamePage( index )
     }
 
     drawSingle( index );
-    drawAllEatenChess();
+    //drawAllEatenChess();
     
     checkGameOver();
 }
@@ -730,7 +740,7 @@ function drawSingleAnimation( index )
 }
 
 // call aiTurn() by setTimeout() .
-function aiAnimation( ai, camp, color )
+function aiAnimationWithColor( ai, camp, color )
 {
     return function()
     {
@@ -738,6 +748,29 @@ function aiAnimation( ai, camp, color )
         aiTurn( ai, camp );
         drawAllEatenChess();
     }
+}
+
+function aiAnimation( ai, camp, index )
+{
+    return function()
+    {
+        aiTurn( ai, camp );
+        //initHighlightIndex();
+        drawSingle( index ); // 把等待字樣清掉
+        drawAllEatenChess();
+        gbWaitingAI = false;
+    }
+}
+
+function aiTurnWait( ai, camp, index )
+{
+    gbWaitingAI = true;
+
+    drawWaiting( index, 1 ); // 畫上等待字樣
+    
+    var iWaitTime = ai == LOW_AI ? 0 : 200;
+    
+    setTimeout( aiAnimation( ai, camp, index ), iWaitTime );
 }
 
 // 開始AI對戰展示
@@ -756,7 +789,7 @@ function startDemo()
     for ( var i = 0; i < times; i ++ )
     {
         //setNowPlayer( getNextPlayer() );
-        gAItimers[i] = setTimeout( aiAnimation( ai, getNowPlayer(), color ), speed * ( i ) );
+        gAItimers[i] = setTimeout( aiAnimationWithColor( ai, getNowPlayer(), color ), speed * ( i ) );
         setNowPlayer( getNextPlayer() );
 
         //ai = ( ai == LOW_AI ) ? MED_AI : LOW_AI;
@@ -1094,7 +1127,7 @@ function showPage( page )
     }
     catch ( err )
     {
-        printDebug( "發生錯誤: " + err.stack );
+        printError( "發生錯誤: " + err.stack );
     }
 
 }
@@ -1129,7 +1162,7 @@ function startGame()
     }
     catch ( err )
     {
-        printDebug( "發生錯誤: " + err.stack );
+        printError( "發生錯誤: " + err.stack );
 
 		showPage( START_PAGE ); // 有錯的時候還是盡量看能不能顯示主頁
     }

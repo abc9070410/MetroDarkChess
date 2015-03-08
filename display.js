@@ -196,7 +196,6 @@ function drawGameLevel( index )
     var posX = pos[0];
     var posY = pos[1];
 
-
     ctx.fillStyle = backChessColor;
 
     ctx.beginPath();
@@ -216,18 +215,14 @@ function drawGameLevel( index )
     var y = phyY + chessFontBaseSize - chessSizeOffset * 2;
     var x = phyX + chessWidth / 2;
 
-    drawCenterText( GAME_LEVEL_NAMES[index][gLanguageIndex], fontSize, frontColor, x, y, false );
+    drawCenterText( STR_LEVEL[gLanguageIndex] + ( index + 1 ), fontSize, frontColor, x, y, false );
 
-    var logo = "█"; // 開始頁面的各功能logo // ☐☑
-    var logoColor; // logo顏色
-
-    logo = GAME_LEVEL_LOGOS[index][gLanguageIndex];
-    fontSize = chessWidth / 4;
+    var logo = asNumberSingal[index + 1];
 
     x = phyX + chessWidth / 2;
     y = phyY + chessWidth / 2;
 
-    drawCenterText( logo, fontSize * 2.5, logoColor, x, y, true );
+    drawCenterText( logo, fontSize * 2, frontColor, x, y, true );
 }
 
 
@@ -537,7 +532,7 @@ function drawFunction( index )
     {
         logo = "L";
     }
-    else if ( index == MED_GAME_PAGE )
+    else if ( index == GAME_LEVEL_PAGE )
     {
         logo = "M";
     }
@@ -997,6 +992,47 @@ function drawOptionOther( index )
     }
 
 }
+
+// 繪製進階頁面
+function drawAdvance( index )
+{
+    setBlockStyle();
+
+    var pos = getPos( index );
+    var posX = pos[0];
+    var posY = pos[1];
+
+
+    ctx.fillStyle = backChessColor;
+
+
+    ctx.beginPath();
+
+    var phyX = posXToPhyX( posX );
+    var phyY = posYToPhyY( posY );
+
+    ctx.rect( phyX, phyY, chessWidth, chessHeight );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    addRoundLine( backChessColor );
+
+    var fontSize = chessWidth / 6; // ( chessFontBaseSize - chessSizeOffset * 3 ) / 7;
+    var y = phyY + chessFontBaseSize - chessSizeOffset * 5;
+    var x = phyX + chessWidth / 2;
+
+    drawCenterText( STR_LEVEL[gLanguageIndex] + ( index + 1 ), fontSize, frontColor, x, y, false );
+
+    var logo = asNumberSingal[index + 1];
+
+    x = phyX + chessWidth / 2;
+    y = phyY + chessWidth / 2;
+
+    drawCenterText( logo, fontSize * 2, logoColor, x, y, true );
+}
+
 
 // 繪製選項頁面的功能
 function drawOptionColor( index )
@@ -1612,7 +1648,7 @@ function redrawAnimation( count )
         }
         catch ( err )
         {
-            printDebug( "發生錯誤: " + err.stack );
+            printError( "發生錯誤: " + err.stack );
         }
     }
 }
@@ -1655,7 +1691,6 @@ function drawSingle( index )
     }
     else if ( getNowPage() == GAME_LEVEL_PAGE )
     {
-    
         drawGameLevel( index );
     }
     else if ( getNowPage() == OPTION_OTHER_PAGE )
@@ -1697,6 +1732,52 @@ function drawSingle( index )
     else if ( getNowPage() == LOG_PAGE )
     {
         drawLog( index );
+    }
+}
+
+function drawWaiting( index, iOrder )
+{
+    //setBlockStyle();
+    
+    drawSingle( index );
+
+    var pos = getPos( index );
+    var posX = pos[0];
+    var posY = pos[1];
+
+    var phyX = posXToPhyX( posX );
+    var phyY = posYToPhyY( posY );
+
+    var fontSize = ( chessFontBaseSize - chessSizeOffset * 3 ) * 0.8;
+
+    var x = phyX + chessWidth / 2;
+    var y = phyY + chessWidth / 2;
+
+    var fontColor = "white";
+    var sSingal = "♨"; // asNumberSingal[iOrder];
+
+    drawCenterText( sSingal, fontSize, fontColor, x, y, false );
+    
+    if ( gbWaitingAI )
+    {
+        if ( iOrder == asNumberSingal.length )
+        {
+            iOrder = 1; // 繼續從1開始
+        }
+    
+        //setTimeout( drawWaitingAnimation( index, iOrder + 1 ), giWaitingSlip );
+    }
+    else
+    {
+        //drawSingle( index );
+    }
+}
+
+function drawWaitingAnimation( index, iOrder )
+{
+    return function()
+    {
+        drawWaiting( index, iOrder );
     }
 }
 
