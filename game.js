@@ -421,7 +421,7 @@ function aiTurn( ai, camp )
             if ( gFirstTurn )
             {
                 setNowCamp( chessData.chesses[destIndex] );
-                printDebug( "<br>先手是" + getCampName( getNowPlayer() ) );
+                printDebug( "先手是" + getCampName( getNowPlayer() ) );
 
                 gPlayerCamp = getAnotherCamp( getNowPlayer() ); // 玩家陣營
 

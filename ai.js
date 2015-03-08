@@ -45,8 +45,8 @@ gChessStates = new Array( 0, -1, -1, -1, 1, -1, -1, -1, 0, 0, -1, 0, 0, 1, -1, -
 // 進階AI找出此次走法
 function moveByAdvanceAI( chesses, chessStates, camp )
 {
+    printDebug( "----------- moveByAdvanceAI -----------" );
 
-    //printDebug( "<hr>" );
     var chessData = copyChessData( getNowChessData() );
 
     var eatPrices = getInitPrices();
@@ -57,7 +57,7 @@ function moveByAdvanceAI( chesses, chessStates, camp )
 
     initSim(); // 清除前次的模擬紀錄
 
-    simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, n );
+    simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, n, 1 );
 
     var bestMoves = getBestSimMoves( chessData ); // find the best move from last sim .
 
@@ -147,8 +147,7 @@ function walkOrEatByBestWay( chessData, camp, eatenPrices, n )
             return false;
         }
 
-        printDebug( " [敵行動:" + sourceIndex + "->" + destIndex + ": " );
-        printDebug( "敵方：" + camp );
+        printDebug( " [敵行動:" + sourceIndex + "->" + destIndex + ": " + "敵方：" + camp );
 
         if ( move( chessData, destIndex, sourceIndex, camp ) )
         {
@@ -185,9 +184,24 @@ function getBestSimMoves( chessData )
 
     for ( var i = 0; i < gSimCount; i ++ )
     {
-        printDebug( "第" + i + "種走法：<br>去吃：" + gSimEatPrices[i] );
-        printDebug( "被吃：" + gSimEatenPrices[i] );
-
+        var iPlayer = getNextPlayer();
+        var sEatText = getChessesByPrices( gSimEatPrices[i], iPlayer );
+        var sEatenText = getChessesByPrices( gSimEatenPrices[i], iPlayer );
+    
+        if ( sEatText != null || sEatenText != null )
+        {
+            printDebug( "第" + i + "種走法:" + gSimMoves[i] );
+        }
+    
+        if ( sEatText != null )
+        {
+            printDebug( "去吃：" + sEatText );
+        }
+        if ( sEatenText != null )
+        {
+            printDebug( "被吃：" + sEatenText );
+        }
+        
         // 若被吃得比吃得好 , 就不考慮了
         if ( comparePrices( gSimEatPrices[i], gSimEatenPrices[i] ) != B_IS_BETTER )
         {
@@ -228,10 +242,15 @@ function getBestSimMoves( chessData )
         }
     }
 
-    printDebug( "最佳:" + bestIndex + "\n" + gSimEatPrices[bestIndex] );
-    printDebug( "" + gSimEatenPrices[bestIndex] );
-    printDebug( "" );
-
+    if ( bestIndex != NOT_FOUND )
+    {
+        printDebug( "最佳:" + bestIndex + "\n" + gSimEatPrices[bestIndex] );
+        printDebug( "" + gSimEatenPrices[bestIndex] );
+    }
+    else
+    {
+        printDebug( "沒找到走法" );
+    }
 
     return bestMoves;
 }
@@ -242,15 +261,13 @@ function saveSim( eatPrices, eatenPrices, moves )
 {
     if ( gSimCount < SIM_LENGTH )
     {
-        printDebug( "[紀錄第" + gSimCount + "種走法]" );
+        printDebug( "[紀錄第" + gSimCount + "種走法]:" + moves );
 
         gSimEatPrices[gSimCount] = copyPrices( eatPrices );
         gSimEatenPrices[gSimCount] = copyPrices( eatenPrices );
         gSimMoves[gSimCount] = copyMoves( moves );
         gSimCount++;
     }
-
-    printDebug( " [" + gSimCount + ":" + moves + "]:" );
 }
 
 // 初始化所有模擬記錄
@@ -268,10 +285,10 @@ function initSim()
 
 
 // 遞迴方式模擬出n步內所有走法（翻棋除外）
-function simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, initN )
+function simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, initN, iRecursionCount )
 {
     var nowRound = initN - n; // 目前進行的回合
-    printDebug( " <br>[第" + nowRound + "回合: 剩" + ( SIM_LENGTH - gSimCount ) + "個位置可放模擬紀錄] " );
+    printDebug( iRecursionCount + " [第" + nowRound + "回合: 剩" + ( SIM_LENGTH - gSimCount ) + "個位置可放模擬紀錄] " );
 
     if ( n > 0 )
     {
@@ -300,8 +317,6 @@ function simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, init
 
             for ( var j = 0; j < moveLength; j ++ )
             {
-                printDebug( "." );
-
                 var destIndex = isCannon ? j : neighborIndexs[j];
 
                 if ( chessData.chessStates[destIndex] == CLOSE )
@@ -350,7 +365,7 @@ function simAllWay( chessData, camp, eatPrices, eatenPrices, firstMoves, n, init
                     
                     if ( n > 0 && gSimCount < SIM_LENGTH )
                     {
-                        simAllWay( innerChessData, camp, innerEatPrices, innerEatenPrices, firstMoves, n - 1, initN );
+                        simAllWay( innerChessData, camp, innerEatPrices, innerEatenPrices, firstMoves, n - 1, initN, iRecursionCount + 1 );
                     }
                     
                     saveSim( innerEatPrices, innerEatenPrices, firstMoves );
@@ -496,10 +511,7 @@ function findInvasiveWalk( chessData, moveData )
 
     if ( existReachIndex )
     {
-        printDebug( " ~~~~~找到啦:" );
-
-        printDebug( "位置:" + bestIndex );
-        printDebug( "方向:" + bestDirection );
+        printDebug( "~~~~~找到啦:位置:" + bestIndex + " , 方向:" + bestDirection  );
         moveData.destIndex = bestIndex;
         moveData.priority = priority;
         moveData.price = bestPrice;

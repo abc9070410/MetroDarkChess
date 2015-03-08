@@ -781,8 +781,6 @@ function getLighterColor( color )
     var g = color.substring( 3, 5 );
     var b = color.substring( 5, 7 );
 
-    //printDebug( r + "_" + g + "_" + b );
-
     var offset = 48;
 
     if ( h2d( r ) + offset > 0 && h2d( r ) + offset < 255 )
@@ -811,9 +809,7 @@ function getDarkerColor( color )
     var r = color.substring( 1, 3 );
     var g = color.substring( 3, 5 );
     var b = color.substring( 5, 7 );
-
-    //printDebug( r + "_" + g + "_" + b );
-
+    
     var offset = -48;
 
     if ( h2d( r ) + offset > 0 && h2d( r ) + offset < 255 )
@@ -1481,11 +1477,6 @@ function comparePrices( pricesA, pricesB )
         }
     }
 
-    
-
-    printDebug( "===")
-
-
     return A_B_ARE_SAME;
 }
 
@@ -1647,4 +1638,34 @@ function isWordOrNumber( str )
     {
         return false;
     }
+}
+
+function getChessByPrice( iPrice, iPlayer )
+{
+    var iBegin = iPlayer == BLACK ? 0 : ( aiPrices.length + 1 ) / 2;
+
+    for ( var i = iBegin; i < gChessPrices.length; i ++ )
+    {
+        if ( gChessPrices[i] == iPrice )
+        {
+            return gChessPatterns[i];
+        }
+    }
+    
+    return NOT_FOUND;
+}
+
+function getChessesByPrices( aiPrices, iPlayer )
+{
+    var sText = "";
+
+    for ( var i = 0; i < aiPrices.length; i ++ )
+    {
+        if ( aiPrices[i] != NOT_FOUND )
+        {
+            sText += "," + i + ":" + getChessByPrice( aiPrices[i], iPlayer );
+        }
+    }
+    
+    return sText == "" ? null : sText;
 }
