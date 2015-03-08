@@ -486,8 +486,8 @@ var gPlayerCamp; // 此局玩家陣營
 //
 var SIM_LENGTH = new Array( 100, 300, 500, 700, 900, 1100, 1300, 1500 ); // 八個等級
 var PRICES_LENGTH = new Array( 4, 5, 6, 7, 8, 9, 10, 11 ); // 八個等級
-var giSimLength = SIM_LENGTH[0];  // 模擬紀錄上限
-var giPricesLength = PRICES_LENGTH[0]; // 單次吃棋或被吃的權值數上限 (也是模擬回合的上限)
+var giSimLength = 500;  // 模擬紀錄上限
+var giPricesLength = 10; // 單次吃棋或被吃的權值數上限 (也是模擬回合的上限)
 
 var A_IS_BETTER = 0; // A(第一個)較優
 var B_IS_BETTER = 1; // B(第二個)較優
