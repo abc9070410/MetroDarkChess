@@ -1,12 +1,12 @@
-MetroDarkChess
-==============
+# MetroDarkChess
 
-A simple chinese dark chess .
+* A simple chinese dark chess
+![res](res/screenshot1.png)
 
+## Demo
+* https://googledrive.com/host/0ByZ1Jl6ghzUBWTdxUFkzOXBpWXM/
 
-Demo:
-https://googledrive.com/host/0ByZ1Jl6ghzUBWTdxUFkzOXBpWXM/
+## Website
 
-Website:
-http://metrodarkchess.blogspot.tw/
+* http://metrodarkchess.blogspot.tw/
 
